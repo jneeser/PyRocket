@@ -1,0 +1,13 @@
+# TODO UnitTests
+# 1. plotting functions for chamber geometry and for cooling channel cross section
+# 2. test cases for 2D solver
+#   2.1 test mesh (plot and give info on mesh quality)
+
+# TODO Geometry 
+# 1. change to accept arrays of cooling geometries 
+
+# TODO RegenCooling
+# 1. implement linear solver using previous point as initial guess 
+
+# TODO FiPy
+# 1. add chamber mesh
