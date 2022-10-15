@@ -36,8 +36,8 @@ class HeatTransfer():
 		self.halpha_c_arr   = np.ndarray(len(self.geometry[:,1]))
 		self.q_rad_arr      = np.ndarray(len(self.geometry[:,1]))
 		self.q_arr          = np.ndarray(len(self.geometry[:,1]))
-		self.T_wall_i_arr     = np.ndarray(len(self.geometry[:,1]))
-		self.T_wall_o_arr     = np.ndarray(len(self.geometry[:,1]))
+		self.T_wall_i_arr   = np.ndarray(len(self.geometry[:,1]))
+		self.T_wall_o_arr   = np.ndarray(len(self.geometry[:,1]))
 		self.T_c_arr        = np.ndarray(len(self.geometry[:,1]))
 		self.P_c_arr        = np.ndarray(len(self.geometry[:,1]))
 		self.section_length = np.ndarray(len(self.geometry[:,1]))
@@ -138,70 +138,30 @@ class HeatTransfer():
 
 		return halpha
 
-	def non_linear_solver(self, idx, u0):
-		# non linear krylov solver to solve heat equations 
-
-		def func(u):
-			# u = [T_w_i, T_w_o, Q]
-
-			U_cc 	 	  = self.cooling_geometry.U_cc[idx]                      						# combustion chamber section circumference 
-			U_c_i 	 	  = self.cooling_geometry.U_c_i[idx]                    						# cooling channel innner side circumference
-			U_c_s 	 	  = self.cooling_geometry.U_c_s[idx]                              			# cooling channel side circumference
-			U_c_o	 	  = self.cooling_geometry.U_c_o[idx]											# cooling channel innner side circumference
-			self.halpha   = self.heat_trans_coeff_gas(u[0], idx)
-			self.halpha_c = self.heat_trans_coeff_coolant(u[1], idx)[0]
-			k 		 	  = self.material.k(u[0])
-			t        	  = self.t_w_i[idx]
-			cylinder      = 2 * np.pi * k / np.log(self.cooling_geometry.r_i[idx]/self.geometry[idx,1])
-
-			# fin properties
-			beta 	 = (self.halpha_c * 2 * U_c_s / (k * self.cooling_geometry.A_fin[idx]))**0.5
-			T_b 	 = self.coolant.T
-			T_f_o    = T_b + (u[1] - T_b) * (np.cosh(beta*U_c_s) - np.tanh(beta*U_c_s) * np.sinh(beta*U_c_s))		# Temperature at the to of the cooling fin 
-
-			L = np.array([[U_cc * self.halpha, 0                                                               , 1],
-						  [0                 ,self.halpha_c * (U_c_i + 2 * U_c_s * beta * np.tanh(beta*U_c_s)), -1],
-						  [cylinder          ,  -cylinder                                                      ,-1]])
-
-			rhs = np.array([U_cc * (self.halpha * self.gas.T_aw[idx] + self.q_rad),
-							self.halpha_c * (U_c_i * T_b + 2 * U_c_s * T_b * beta * np.tanh(beta * U_c_s) - U_c_o * (T_f_o - T_b)),
-							0])		
-
-			#return np.dot(L,u) - rhs
-			return np.linalg.solve(L, rhs)
-
-		#u = scipy.optimize.newton_krylov(func, u0, method='gmres')
-		u = func(u0)
-		return(u)
-
-
-	def _heat_flux(self, idx,maxIter=100, tol=1e-6):
-		T_wall_guess = 600
-		T_wall_coolant = 400
+	def section_solver(self, idx, T_wall_guess, maxIter=100, tol=1e-6):
 		Niter = 0
 		diff = 1
 
 		while diff > tol:
 			self.halpha   = self.heat_trans_coeff_gas(T_wall_guess, idx)
-			self.halpha_c = self.heat_trans_coeff_coolant(T_wall_coolant, idx)
+			self.halpha_c = self.heat_trans_coeff_coolant(T_wall_guess, idx)
 			self.halpha_c = self.cooling_geometry.channel_efficiency(self.material.k(T_wall_guess), self.halpha_c, idx)
 			self.q_rad    = self.radiation(idx)
 			
-			self.q      = (self.gas.T_aw[idx] - self.coolant.T + self.q_rad/self.halpha) / (1/self.halpha + self.t_w_i[idx]/self.material.k(T_wall_guess) + 1/self.halpha_c)
-			self.T_wall = -((self.q - self.q_rad)/self.halpha - self.gas.T_aw[idx])
+			self.q        = (self.gas.T_aw[idx] - self.coolant.T + self.q_rad/self.halpha) / (1/self.halpha + self.t_w_i[idx]/self.material.k(T_wall_guess) + 1/self.halpha_c)
+			self.T_wall_i = -((self.q - self.q_rad)/self.halpha - self.gas.T_aw[idx])
 			
-			T_wall_coolant = -self.q * self.t_w_i[idx] / self.material.k(T_wall_guess) + T_wall_guess
+			self.T_wall_o = -self.q * self.t_w_i[idx] / self.material.k(T_wall_guess) + T_wall_guess
 
-			diff   = abs(self.T_wall - T_wall_guess)
+			diff   = abs(self.T_wall_i - T_wall_guess)
 			Niter += 1
 
 			if Niter > maxIter:
 				raise ValueError('Maximum number of iterations reached without convergence')
 
-			T_wall_guess = self.T_wall
+			T_wall_guess = self.T_wall_i
 		
 		# update coolant properties
-		print(self.u)
 		dT           = self.q * self.section_area[idx] / (self.m_dot_coolant * self.coolant.Cp) 
 		dp, _        = self.pressure_drop(idx)
 		
@@ -222,7 +182,7 @@ class HeatTransfer():
 		
 		
 	def run_sim(self):
-		self.u0 = np.array([500, 300, 8000])
+		self.T_wall_i = 500
 
 		for i in range(len(self.geometry[:,1])):
 			idx = len(self.geometry[:,1]) - i - 1
@@ -238,7 +198,7 @@ class HeatTransfer():
 				self.section_length[idx] = np.sqrt(x_len + y_len)
 				self.section_area[idx] = np.pi * 2 *self.geometry[idx,1] * self.section_length[idx]
 			
-			self.section_heat_flux(idx, self.u0)
+			self.section_solver(idx, self.T_wall_i)
 
 
 			self.halpha_arr[idx]   = self.halpha
