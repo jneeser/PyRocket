@@ -99,3 +99,4 @@ if __name__ == '__main__':
         print(round(t,3), '   ', round(max(phi),3))
 
         viewer.plot()
+        

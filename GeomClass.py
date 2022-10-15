@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 
 
 class ChamberGeometry():
-    def __init__(self, D_c, D_t, D_e, L_cyl, r_1, r_2, phi_conv, phi_div, step_size=0.0004):
+    def __init__(self, D_c, D_t, D_e, L_cyl, r_1, r_2, phi_conv, phi_div, step_size=0.0003):
         self.D_c = D_c                                              # chamber diameter [m]
         self.D_t = D_t                                              # throat diameter [m]
         self.D_e = D_e                                              # exit diamter [m]
