@@ -137,6 +137,7 @@ class HeatTransfer():
 		halpha = Nu * k / self.D_h[idx]
 
 		return halpha
+		
 
 	def section_solver(self, idx, T_wall_guess, maxIter=100, tol=1e-6):
 		Niter = 0
@@ -166,20 +167,7 @@ class HeatTransfer():
 		dp, _        = self.pressure_drop(idx)
 		
 		self.coolant = thermo.Mixture(IDs=self.coolant.IDs, ws=self.coolant.ws, T=(self.coolant.T+dT), P=(self.coolant.P-dp))
-		
 
-	def section_heat_flux(self, idx, u0,maxIter=100, tol=1e-6):
-		self.q_rad     = self.radiation(idx)
-		self.u 		   = self.non_linear_solver(idx, u0)
-		self.T_wall_i  = self.u[0]
-		self.T_wall_o  = self.u[1]
-		self.q 		   = self.u[2] / self.cooling_geometry.U_cc[idx]
-
-		dT            = self.q * self.section_area[idx] / (self.m_dot_coolant * self.coolant.Cp) 
-		dp, _         = self.pressure_drop(idx)
-		
-		self.coolant  = thermo.Mixture(IDs=self.coolant.IDs, ws=self.coolant.ws, T=(self.coolant.T+dT), P=(self.coolant.P-dp))
-		
 		
 	def run_sim(self):
 		self.T_wall_i = 500

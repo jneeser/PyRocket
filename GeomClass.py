@@ -110,6 +110,7 @@ class CoolingGeometry():
         self.U_c_s = self.r_o - self.r_i                                             # cooling channel side circumference
         self.U_c_o = self.r_o  * self.psi_c                                          # cooling channel outer side circumference
 
+
     def channel_efficiency(self, k, halpha_c, idx):
         # estimate of cooling channel efficiency based on heat trasnfer coefficient and channel shape 
         # k :                   [float] thermal conductivity 
@@ -119,10 +120,11 @@ class CoolingGeometry():
 
         a_c = self.r_i[idx] * self.psi_c
         b_c = self.r_i[idx] * self.psi_w
+        a_c_o = self.r_o[idx] * self.psi_c
 
         eta_c = np.tanh(np.sqrt((2 * halpha_c * b_c ) / k) * self.t_w_i / b_c) / (np.sqrt((2 * halpha_c * b_c ) / k) * self.t_w_i / b_c)
   
-        halpha_c_corr = (a_c + eta_c * (2 * (self.r_o[idx] - self.r_i[idx]) + a_c)) / (a_c + b_c) * halpha_c
+        halpha_c_corr = (a_c + eta_c * (2 * (self.r_o[idx] - self.r_i[idx]) + a_c_o)) / (a_c + b_c) * halpha_c
     
         return halpha_c_corr        
 
