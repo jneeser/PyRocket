@@ -124,9 +124,12 @@ class CoolingGeometry():
 
         eta_c = np.tanh(np.sqrt((2 * halpha_c * b_c ) / k) * self.t_w_i / b_c) / (np.sqrt((2 * halpha_c * b_c ) / k) * self.t_w_i / b_c)
   
-        halpha_c_corr = (a_c + eta_c * (2 * (self.r_o[idx] - self.r_i[idx]) + a_c_o)) / (a_c + b_c) * halpha_c
+        halpha_c_corr = (a_c + eta_c * (2 * (self.r_o[idx] - self.r_i[idx]))) / (a_c + b_c) * halpha_c
     
-        return halpha_c_corr        
+        return halpha_c_corr     
+
+    def channel_cross_section(self):
+        return -1   
 
 
 
