@@ -35,6 +35,10 @@ class HeatTransfer():
 		self.T_amb = 288								# ambient temperature [K]
 		self.boltzmann = 5.67e-8						# stefan boltzmann constant 
 
+		# section property arrays
+		self.section_length = np.ndarray(len(geometry[:,1]))
+		self.section_area   = np.ndarray(len(geometry[:,1]))
+
 		# Output arrays
 		self.out = Output1D()
 
