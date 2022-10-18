@@ -6,7 +6,7 @@ import scipy.optimize
 
 
 class HeatTransfer():
-	def __init__(self, cea, gas, geometry, material, coolant, cooling_geometry, m_dot, m_dot_coolant, model='standard-bartz', cool_model='gnielinski', eta_combustion=0.92):
+	def __init__(self, cea, gas, geometry, material, coolant, cooling_geometry, m_dot, m_dot_coolant, model='standard-bartz', cool_model='gnielinski', correction=1, eta_combustion=0.92):
 		"""[summary]
 		Coolant flow properties stored as total conditions
 		Hot gas properties from CEA
@@ -23,10 +23,12 @@ class HeatTransfer():
 		self.cool_model = cool_model		 			# coolant side heat transfer model
 		self.eta_comb = eta_combustion       			# combustion efficiency
 		self.cooling_geometry = cooling_geometry	 	# cooling channel geometry class
+		self.correction = correction					# correction factor 
 
 		self.A_c = cooling_geometry.A_c					# cooling channel area [m^2]
 		self.D_h = cooling_geometry.D_h				    # cooling channel hydraulic diameter [m]
-		self.t_w_i = cooling_geometry.t_w_i_arr	      	# inner wall thickness [m]
+		self.t_w_i = cooling_geometry.t_w_i  	      	# inner wall thickness [m]
+		self.t_w_o = cooling_geometry.t_w_o  	      	# inner wall thickness [m]
 		
 		self.T_amb = 288								# ambient temperature [K]
 		self.boltzmann = 5.67e-8						# stefan boltzmann constant 
@@ -146,7 +148,7 @@ class HeatTransfer():
 		while diff > tol:
 			self.halpha   = self.heat_trans_coeff_gas(T_wall_guess, idx)
 			self.halpha_c = self.heat_trans_coeff_coolant(T_wall_guess, idx)
-			self.halpha_c = self.cooling_geometry.channel_efficiency(self.material.k(T_wall_guess), self.halpha_c, idx)
+			self.halpha_c = self.correction * self.cooling_geometry.channel_efficiency(self.material.k(T_wall_guess), self.halpha_c, idx)
 			self.q_rad    = self.radiation(idx)
 			
 			self.q        = (self.gas.T_aw[idx] - self.coolant.T + self.q_rad/self.halpha) / (1/self.halpha + self.t_w_i[idx]/self.material.k(T_wall_guess) + 1/self.halpha_c)

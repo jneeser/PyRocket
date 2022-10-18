@@ -5,7 +5,7 @@ import config
 
 
 # heattransfer sim
-sim = rc.HeatTransfer(config.cea, config.gas, config.chamber.geometry, config.material, config.coolant, config.cooling_geom, config.m_dot, config.m_dot_coolant, config.hot_gas_method, config.cooling_method, config.eta_combustion)
+sim = rc.HeatTransfer(config.cea, config.gas, config.chamber.geometry, config.material, config.coolant, config.cooling_geom, config.m_dot, config.m_dot_coolant, config.hot_gas_method, config.cooling_method, config.correction, config.eta_combustion)
 sim.run_sim()
 
 # plotting
