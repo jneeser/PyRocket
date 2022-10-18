@@ -37,7 +37,7 @@ class HeatTransfer():
 
 		# section property arrays
 		self.section_length = np.ndarray(len(geometry[:,1]))
-		self.section_area   = np.ndarray(len(geometry[:,1]))
+		self.section_area = np.ndarray(len(geometry[:,1]))
 
 		# Output arrays
 		self.out = Output1D()
@@ -135,38 +135,40 @@ class HeatTransfer():
 		return halpha
 		
 
-	def section_solver(self, idx, T_wall_guess, maxIter=100, tol=1e-6):
+	def section_solver(self, idx, maxIter=100, tol=1e-6):
+		T_wall_guess = 600
+		T_wall_coolant = 400
 		Niter = 0
 		diff = 1
 
 		while diff > tol:
 			self.halpha   = self.heat_trans_coeff_gas(T_wall_guess, idx)
-			self.halpha_c = self.heat_trans_coeff_coolant(T_wall_guess, idx)
+			self.halpha_c = self.heat_trans_coeff_coolant(T_wall_coolant, idx)
 			self.halpha_c = self.correction * self.cooling_geometry.channel_efficiency(self.material.k(T_wall_guess), self.halpha_c, idx)
 			self.q_rad    = self.radiation(idx)
 			
 			self.q        = (self.gas.T_aw[idx] - self.coolant.T + self.q_rad/self.halpha) / (1/self.halpha + self.t_w_i[idx]/self.material.k(T_wall_guess) + 1/self.halpha_c)
 			self.T_wall_i = -((self.q - self.q_rad)/self.halpha - self.gas.T_aw[idx])
 			
-			self.T_wall_o = -self.q * self.t_w_i[idx] / self.material.k(T_wall_guess) + T_wall_guess
+			self.T_wall_o = -self.q * self.t_w_i[idx]/self.material.k(T_wall_guess) + self.T_wall_i
 
-			diff   = abs(self.T_wall_i - T_wall_guess)
+			diff   = np.max([abs(self.T_wall_i - T_wall_guess), abs(self.T_wall_o - T_wall_coolant)])
+			
 			Niter += 1
 
 			if Niter > maxIter:
 				raise ValueError('Maximum number of iterations reached without convergence')
 
-			T_wall_guess = self.T_wall_i
-		
+			T_wall_guess   = self.T_wall_i
+			T_wall_coolant = self.T_wall_o
+
 		# update coolant properties
 		dT           = self.q * self.section_area[idx] / (self.m_dot_coolant * self.coolant.Cp) 
 		dp, _        = self.pressure_drop(idx)
 		
 		self.coolant = thermo.Mixture(IDs=self.coolant.IDs, ws=self.coolant.ws, T=(self.coolant.T+dT), P=(self.coolant.P-dp))
-
 		
 	def run_sim(self):
-		self.T_wall_i = 500
 
 		for i in range(len(self.geometry[:,1])):
 			idx = len(self.geometry[:,1]) - i - 1
@@ -182,7 +184,7 @@ class HeatTransfer():
 				self.section_length[idx] = np.sqrt(x_len + y_len)
 				self.section_area[idx] = np.pi * 2 *self.geometry[idx,1] * self.section_length[idx]
 			
-			self.section_solver(idx, self.T_wall_i)
+			self.section_solver(idx)
 
 
 			self.out.halpha[idx]    = self.halpha
