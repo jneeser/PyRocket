@@ -2,6 +2,8 @@ import numpy as np
 import thermo
 import scipy.optimize 
 
+from Output import Output1D
+
 
 
 
@@ -34,19 +36,7 @@ class HeatTransfer():
 		self.boltzmann = 5.67e-8						# stefan boltzmann constant 
 
 		# Output arrays
-		self.halpha_arr     = np.ndarray(len(self.geometry[:,1]))
-		self.halpha_c_arr   = np.ndarray(len(self.geometry[:,1]))
-		self.q_rad_arr      = np.ndarray(len(self.geometry[:,1]))
-		self.q_arr          = np.ndarray(len(self.geometry[:,1]))
-		self.T_wall_i_arr   = np.ndarray(len(self.geometry[:,1]))
-		self.T_wall_o_arr   = np.ndarray(len(self.geometry[:,1]))
-		self.T_c_arr        = np.ndarray(len(self.geometry[:,1]))
-		self.P_c_arr        = np.ndarray(len(self.geometry[:,1]))
-		self.section_length = np.ndarray(len(self.geometry[:,1]))
-		self.section_area   = np.ndarray(len(self.geometry[:,1]))
-		self.Re_arr         = np.ndarray(len(self.geometry[:,1]))
-		self.v_coolant_arr  = np.ndarray(len(self.geometry[:,1]))
-		self.T_hg_arr       = np.ndarray(len(self.geometry[:,1]))
+		self.out = Output1D()
 
 
 
@@ -191,16 +181,15 @@ class HeatTransfer():
 			self.section_solver(idx, self.T_wall_i)
 
 
-			self.halpha_arr[idx]   = self.halpha
-			self.halpha_c_arr[idx] = self.halpha_c
-			self.q_rad_arr[idx]    = self.q_rad
-			self.q_arr[idx]        = self.q
-			self.T_wall_i_arr[idx]   = self.T_wall_i
-			self.T_wall_o_arr[idx]   = self.T_wall_o
-			self.T_c_arr[idx]      = self.coolant.T
-			self.P_c_arr[idx]      = self.coolant.P
-			self.Re_arr[idx]	   = self.Re
-			self.T_hg_arr[idx]	   = self.T_hg 
-			self.v_coolant_arr[idx]= self.v_coolant
-
+			self.out.halpha[idx]    = self.halpha
+			self.out.halpha_c[idx]  = self.halpha_c
+			self.out.q_rad[idx]     = self.q_rad
+			self.out.q[idx]         = self.q
+			self.out.T_wall_i[idx]  = self.T_wall_i
+			self.out.T_wall_o[idx]  = self.T_wall_o
+			self.out.T_c[idx]       = self.coolant.T
+			self.out.P_c[idx]       = self.coolant.P
+			self.out.Re[idx]	    = self.Re
+			self.out.T_hg[idx]	    = self.T_hg 
+			self.out.v_coolant[idx] = self.v_coolant
 
