@@ -31,7 +31,7 @@ def get_mesh(cellSize):
 
     return mesh
 
-cellSize = 0.0005
+cellSize = 0.0008
 mesh = get_mesh(cellSize)
 phi = CellVariable(name = "T [K]",
                    mesh = mesh,
@@ -45,24 +45,24 @@ if __name__ == '__main__':
 
     method = 'cinjarew'
     cooling_method = 'gnielinski'
-    sim = rc.HeatTransfer(config.cea, config.gas, config.chamber.geometry, config.material, config.coolant, config.cooling_geom, config.m_dot, config.m_dot_coolant, method, cooling_method, config.eta_combustion)
+    sim = rc.HeatTransfer(config.cea, config.gas, config.chamber.geometry, config.material, config.coolant, config.cooling_geom, config.m_dot, config.m_dot_coolant, method, cooling_method, config.correction, config.eta_combustion)
     sim.run_sim()
 
     def halpha_gas(x):
-        halpha = interpolate.interp1d(config.geometry[:,0], sim.halpha_arr, kind='linear', fill_value='extrapolate')
+        halpha = interpolate.interp1d(config.geometry[:,0], sim.out.halpha, kind='linear', fill_value='extrapolate')
         return halpha(x)
 
     def halpha_coolant(x):
-        halpha_c = interpolate.interp1d(config.geometry[:,0], sim.halpha_c_arr,                                                         kind='linear', fill_value='extrapolate')
+        halpha_c = interpolate.interp1d(config.geometry[:,0], sim.out.halpha_c,                                                         kind='linear', fill_value='extrapolate')
         return halpha_c(x)
 
     def coolant_temp(x):
-        T_c = interpolate.interp1d(config.geometry[:,0], sim.T_c_arr, kind='linear', fill_value='extrapolate')
+        T_c = interpolate.interp1d(config.geometry[:,0], sim.out.T_c, kind='linear', fill_value='extrapolate')
         return T_c(x)
 
     def hot_gas_temp(x):
-        T_hg = interpolate.interp1d(config.geometry[:,0], sim.T_hg_arr, kind='linear', fill_value='extrapolate')
-        return T_hg(x)
+        T_aw = interpolate.interp1d(config.geometry[:,0], sim.gas.T_aw, kind='linear', fill_value='extrapolate')
+        return T_aw(x)
 
     def thermal_conductivity(T):
         k = config.material.k
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
 
 
-    D = 5e-6
+    D = 1e-4
 
     topFlux     = halpha_coolant(x) * mesh.faceNormals
     bottomFlux  = halpha_gas(x) * mesh.faceNormals
@@ -84,9 +84,9 @@ if __name__ == '__main__':
 
     eq = TransientTerm() == DiffusionTerm(coeff=D)
 
-    timeStepDuration =  0.99 * (cellSize/2)**2 / (2 * D)
+    timeStepDuration =  0.99 * (cellSize)**2 / (D)
 
-    steps = 500
+    steps = 2000
     t = 0
 
     print('Time [s]', '     ', 'max T [K]')
