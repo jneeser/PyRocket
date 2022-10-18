@@ -144,13 +144,13 @@ class HeatTransfer():
 		while diff > tol:
 			self.halpha   = self.heat_trans_coeff_gas(T_wall_guess, idx)
 			self.halpha_c = self.heat_trans_coeff_coolant(T_wall_coolant, idx)
-			self.halpha_c = self.correction * self.cooling_geometry.channel_efficiency(self.material.k(T_wall_guess), self.halpha_c, idx)
+			self.halpha_c = self.correction * self.cooling_geometry.channel_efficiency(self.material.k(T_wall_coolant), self.halpha_c, idx)
 			self.q_rad    = self.radiation(idx)
 			
 			self.q        = (self.gas.T_aw[idx] - self.coolant.T + self.q_rad/self.halpha) / (1/self.halpha + self.t_w_i[idx]/self.material.k(T_wall_guess) + 1/self.halpha_c)
 			self.T_wall_i = -((self.q - self.q_rad)/self.halpha - self.gas.T_aw[idx])
 			
-			self.T_wall_o = -self.q * self.t_w_i[idx]/self.material.k(T_wall_guess) + self.T_wall_i
+			self.T_wall_o = -self.q * self.t_w_i[idx]/self.material.k(self.T_wall_i) + self.T_wall_i
 
 			diff   = np.max([abs(self.T_wall_i - T_wall_guess), abs(self.T_wall_o - T_wall_coolant)])
 			
