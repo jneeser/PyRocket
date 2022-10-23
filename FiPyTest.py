@@ -84,9 +84,9 @@ if __name__ == '__main__':
 
     eq = TransientTerm() == DiffusionTerm(coeff=D)
 
-    timeStepDuration =  0.99 * (cellSize)**2 / (D)
+    timeStepDuration = 10 * 0.99 * (cellSize)**2 / (2*D)
 
-    steps = 2000
+    steps = 200
     t = 0
 
     print('Time [s]', '     ', 'max T [K]')
@@ -99,4 +99,4 @@ if __name__ == '__main__':
         print(round(t,3), '   ', round(max(phi),3))
 
         viewer.plot()
-        
+

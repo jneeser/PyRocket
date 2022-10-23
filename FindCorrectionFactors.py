@@ -17,6 +17,6 @@ def fun(c):
     return max(sim.out.T_c) - target_temperature
 
 Niter = 1
-target_temperature =  510+273                  # target cooling channel exit temperature [K]
+target_temperature =  450+273                  # target cooling channel exit temperature [K]
 res = scipy.optimize.fsolve(fun, 3)
 print('Correction factor:   ', res)
