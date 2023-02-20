@@ -1,3 +1,13 @@
+#####################################################################
+#                           PyRocket								#
+# 2D Regenertive Cooling Simulation for Bipropellant Rocket Engines #
+#                                                                   #
+# Creator:  Joanthan Neeser                                         #
+# Date:     15.12.2022                                              #
+# Version:  2.3  													#
+# License:	GNU GENERAL PUBLIC LICENSE V3							#                                          
+#####################################################################
+
 from rocketcea.cea_obj import CEA_Obj
 
 class CEA():
@@ -9,7 +19,7 @@ class CEA():
 		:type oxidiser = string
 		"""
 		self.chamber_pressure = chamber_pressure
-		self.imperial_pressure = 0.000145038*self.chamber_pressure 			#conversion to psia
+		self.imperial_pressure = 0.000145038 * self.chamber_pressure 			#conversion to psia
 		self.ispObj = CEA_Obj( oxName=oxidiser, fuelName=fuel)
 		self.ispObj.get_full_cea_output()
 
@@ -38,10 +48,10 @@ class CEA():
 
 		self.isp, self.cstar, _ =  self.ispObj.getFrozen_IvacCstrTc(Pc=self.imperial_pressure, MR=mixture_ratio, eps=expansion_ratio)
 		
-		self.cstar = self.cstar * 0.3048																										# coversion to m/s
+		self.cstar          = self.cstar * 0.3048																								        # coversion to m/s
 		self.mole_fractions = self.ispObj.get_SpeciesMoleFractions(Pc=self.imperial_pressure, MR=mixture_ratio, eps=expansion_ratio, frozen=0, frozenAtThroat=0, min_fraction=5e-05)
-		self.Cp = self.Cp * 4186.8				
-		self.R = self.Cp - self.Cp/self.gamma																								# coversion to J/gk/K
-		self.mu = self.visc * 0.0001																											# coversion to Pa*s
-		self.k = self.cond * 418.4e-3																											# coversion to W/m/K
-		self.Tc = self.ispObj.get_Tcomb(Pc=self.imperial_pressure, MR=mixture_ratio)*0.555556										        # coversion to K		
+		self.Cp             = self.Cp * 4186.8																											# coversion to J/kg/K
+		self.R              = 8314.46 / self.MW																											# J/kg/K
+		self.mu             = self.visc * 0.0001																										# coversion to Pa*s
+		self.k              = self.cond * 418.4e-3																										# coversion to W/m/K
+		self.Tc             = self.ispObj.get_Tcomb(Pc=self.imperial_pressure, MR=mixture_ratio)*0.555556										        # coversion to K		

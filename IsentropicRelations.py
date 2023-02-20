@@ -1,10 +1,23 @@
+#####################################################################
+#                           PyRocket								#
+# 2D Regenertive Cooling Simulation for Bipropellant Rocket Engines #
+#                                                                   #
+# Creator:  Joanthan Neeser                                         #
+# Date:     15.12.2022                                              #
+# Version:  2.3  													#
+# License:	GNU GENERAL PUBLIC LICENSE V3							#                                          
+#####################################################################
+
 import numpy as np
 import scipy.optimize 
 
-import config
-import PlottingFunctions as pl
 
 class Isentropic():
+	"""[Summary]
+	Class to calculate isentropic expansion of the combustion gases, as well as the adiabatic wall temperature. 
+	((I know T_aw is not an isentropic process)) T_aw includes an assumed recovery factor depending on if the gas
+	is in the converging or diverging section. 
+	"""
 	def __init__(self, p_t, T_t, gamma, Pr, x_coordiantes, y_coordiantes):
 		self.p_t = p_t                      # total pressure
 		self.T_t = T_t                      # total temperature
@@ -54,11 +67,3 @@ class Isentropic():
 		self.pressure()
 		self.temperature()
 		self.adiabatic_wall_temp()
-
-
-if __name__ == "__main__":
-	# Test isentropic relations class
-	gas = Isentropic(config.Pc, config.cea.Tc, config.cea.gamma, config.cea.Pr, config.geometry[:,0], config.geometry[:,1])
-	gas.calculate()
-
-	pl.multi_plot(gas.M, gas.T_s, gas.p_s, gas.T_aw, 'M', 'T_s [K]', 'p_s [Pa]', 'T_aw [K]')

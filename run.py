@@ -1,10 +1,45 @@
+#####################################################################
+#                           PyRocket								#
+# 2D Regenertive Cooling Simulation for Bipropellant Rocket Engines #
+#                                                                   #
+# Creator:  Joanthan Neeser                                         #
+# Date:     15.12.2022                                              #
+# Version:  2.3  													#
+# License:	GNU GENERAL PUBLIC LICENSE V3							#                                          
+#####################################################################
+
+import config
 import RegenCooling as rc
 import PlottingFunctions as pl
-import config
 
-# heattransfer sim
-sim = rc.HeatTransfer(config.cea, config.gas, config.chamber.geometry, config.material, config.coolant, config.cooling_geom, config.m_dot, config.m_dot_coolant, config.hot_gas_method, config.cooling_method, config.correction, config.eta_combustion)
-sim.run_sim()
+# give terminal message about simulation settings
+config.settings.output_msg()
+config.output.output_msg()
+
+# heat transfer sim
+sim = rc.HeatTransfer(
+    cea=config.cea,
+    gas=config.gas,
+    geometry=config.chamber.geometry,
+    material=config.material,
+    coolant=config.coolant,
+    cooling_geometry=config.cooling_geom,
+    m_dot=config.m_dot,
+    m_dot_coolant=config.m_dot_coolant,
+	T_amb = config.ambient_temp,
+    output=config.output,
+    settings2D=config.settings,
+    model=config.hot_gas_method,
+    cool_model=config.cooling_method,
+    eta_combustion=config.eta_combustion,
+)
+
+sim.run()
 
 # plotting
-pl.multi_plot(sim.out.T_wall_i, sim.out.T_wall_o, sim.out.q/1e6, sim.out.T_c, 'T_w,i [K]', 'T_w,o [K]', 'q_dot [MW/m^2]', 'T_c [K]')
+plot = pl.Plotting1D(save_path=config.save_path, save=True, show=False)
+plot.temperature_plot()
+plot.pressure_plot()
+plot.heat_transfer_coeff_plot()
+plot.heat_flux_plot()
+plot.reynolds_plot()
