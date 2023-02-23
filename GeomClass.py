@@ -41,7 +41,7 @@ class ChamberGeometry():
 
         # Converging section radius (at least 3 points)
         n1 = max(round((self.r_1 * self.phi_conv ) / self.dx), 3)     # number of discretisations in the radius
-        t = np.linspace(0, self.phi_conv, n1)
+        t = np.linspace(0, self.phi_conv, n1, endpoint="False")
 
         x_B = self.L_cyl + self.r_1 * np.sin(t)
         y_B = (self.D_c / 2 - self.r_1) + self.r_1 * np.cos(t)
@@ -57,7 +57,7 @@ class ChamberGeometry():
 
         # Converging radius up to throat (at least 3 points)
         n2 = max(round((self.r_2 * self.phi_conv) / self.dx), 3)      # number of discretisations in the radius
-        t = np.linspace(- self.phi_conv, 0, n2)
+        t = np.linspace(- self.phi_conv, 0, n2, endpoint="False")
 
         L_r21 = self.r_2 * np.sin(self.phi_conv)
         x_D = self.L_cyl + L_r1 + L_con + L_r21 + self.r_2 * np.sin(t)
@@ -66,7 +66,7 @@ class ChamberGeometry():
 
         # Throat (at least 3 points)
         n3  = max(round((self.r_n * self.phi_div) / self.dx), 3)      # number of discretisations in the radius
-        t = np.linspace(self.phi_div / n3, self.phi_div, n3)
+        t = np.linspace(self.phi_div/3, self.phi_div, n3, endpoint="False")
 
         L_r22 = self.r_n * np.sin(self.phi_div)
 
@@ -99,10 +99,10 @@ class ChamberGeometry():
 
 
     def plot_contour(self, path=False):
-        plt.plot(self.x, self.y, color='b')
-        plt.plot(self.x, -self.y, color='b')
-        plt.xlabel('x_coordinate [m]')
-        plt.ylabel('y_coordinate [m]')
+        plt.plot(self.x*1e3, self.y*1e3, color='b')
+        plt.plot (self.x*1e3, -self.y*1e3, color='b')
+        plt.xlabel('x_coordinate [mm]')
+        plt.ylabel('y_coordinate [mm]')
         plt.title('Chamber Contour')
         plt.axis('equal')
         if path != False:
