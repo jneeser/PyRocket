@@ -116,7 +116,7 @@ def multi_plot(data1, data2, data3, data4, label1, label2, label3, label4):
 
 
 if __name__ == "__main__":
-    plot = Plotting1D(save_path="SectionImages564_Z_6", save=True, show=True)
+    plot = Plotting1D(save_path=config.save_path, save=True, show=True)
     plot.temperature_plot()
     plot.pressure_plot()
     plot.heat_transfer_coeff_plot()
