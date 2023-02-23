@@ -180,7 +180,7 @@ routine can be implemented using scipy.optimize.minimize. Using a Monte Carlo ap
 This approach is recommended in most cases as single case run times typically exceed 5 mins and are intrinsically difficult to parallelise. 
 
 ## Program Validation
-PyRocket has been validated using data gathered on N2O/C2H6 thrusters tested at DLR-Lampolddshausen. Using data from nine steady state tests, an average total heat flux 
+PyRocket has been validated using data gathered on 22 N N2O/Hydrocarbon thrusters. Using data from nine steady state tests, an average total heat flux 
 error of 8.3% with a standard deviation of 5.6% was determined. The wall temperature has been validated at discrete locations with a mean error of 11.2% and a standard deviation of 10%.
 For Validation purposes the axial and radial coordinate of thermocouples along the camber can be set in config.py. The temperature at that location will then be displayed in the 
 terminal output for the simulation. Set 'log_TC' to True to enable the output.  
