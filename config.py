@@ -27,9 +27,9 @@ ox              = 'N2O'
 hot_gas_method  = 'cinjarev'                         # use either 'cinjarev', 'standard-bartz' or 'modified-bartz'
 
 # Operating point of combustion chamber 
-eta_combustion  = 0.94
-MR              = 8
-m_dot           = 8e-3                               # total mass flow [kg/s]
+eta_combustion  = 0.92
+MR              = 12
+m_dot           = 7e-3                               # total mass flow [kg/s]
 m_dot_f         = m_dot / (MR + 1)
 m_dot_ox        = m_dot - m_dot_f
 Pc              = 10e5                               # Chamber pressure [Pa]
@@ -55,14 +55,14 @@ r_n       = 2e-3                                     # throat diverging radius [
 phi_conv  = 30                                       # convergence angle [deg]
 phi_div   = 28                                       # divergence angle [deg]
 phi_e     = 15                                       # exit angle [deg]
-step_size = 0.002                                   # step size along the chamber contour [m]
+step_size = 0.003                                   # step size along the chamber contour [m]
 material  = matlib.SS14404                           # use entry from MaterialLibrary. Make sure temperature dependent properties are specified
 
 # cooling channel geometry; h_c, psi, t_w_i can be functions of x 
 n     = 8                                           # number of cooling channels [int]
 h_c   = 3e-3                                         # radial height of cooling channels [m] CAN BE FLOAT OR FUNCTION
 # EXAMPLE of function input for psi: psi = lambda x: 1/3 * (1 - 0.0001 * x) 
-psi   = 0.4                                         # fill factor of the cooling channels; fraction of the circumferecne covered by the cooling channels (0 - 1) CAN BE FLOAT OR FUNCTION
+psi   = 0.5                                         # fill factor of the cooling channels; fraction of the circumferecne covered by the cooling channels (0 - 1) CAN BE FLOAT OR FUNCTION
 t_w_i = 2e-3                                         # inner chamber wall thickness [m] CAN BE FLOAT OR FUNCTION
 t_w_o = 2e-3                                         # outer chamber wall thickness [m]
 start_idx = -1										 # starting index, use 0 for injector side and -1 for nozzle
@@ -78,7 +78,7 @@ run_time     = 'steady_state'                        # use 'steady_state' as def
 
 # add thermocouple locations for model validation (effecively temperature logging points in the 2D solution)
 log_TC = False                                       # temperature at thermocouple locations is to be logged
-TC_x   = [14.1e-3, 38.1e-3, 62.1e-3]                 # x coordinate of thermocouples 
+TC_x   = [10e-3, 20e-3, 30e-3]                 # x coordinate of thermocouples 
 TC_r   = [16e-3, 16e-3, 16e-3]                       # radial position of thermocouples               
 
 
