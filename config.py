@@ -35,9 +35,9 @@ m_dot_ox        = m_dot - m_dot_f
 Pc              = 20e5                               # Chamber pressure [Pa]
 
 # Coolant input
-cooling_fluid   = ['c5h6oh']                    # needs to be list of str
-fluid_mass_frac = [1]    			         # mass fractions of the cooling fluid (needs to add up to 1)
-m_dot_coolant   = m_dot_f                 		 	 # mass flow through the cooling channels
+cooling_fluid   = ['h2o2', 'h2o']                    # needs to be list of str
+fluid_mass_frac = [0.85, 0.15]    			         # mass fractions of the cooling fluid (needs to add up to 1)
+m_dot_coolant   = m_dot_ox                 		 	 # mass flow through the cooling channels
 inlet_temp      = 288.15                     		 # inlet temperature [K]
 inlet_pressure  = 24.5e5                             # Cooling channel inlet pressure [Pa]
 
