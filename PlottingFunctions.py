@@ -23,10 +23,10 @@ class Plotting1D():
 
 
     def temperature_plot(self):
-        plt.plot(config.geometry[:,0]*1e3, self.data[:,6], label='inner wall temperature')
-        plt.plot(config.geometry[:,0]*1e3, self.data[:,7], label='coolant temperature')
+        plt.plot(config.geometry[:,0]*1e3, self.data[:,7]-273.15, color='b', label='Coolant bulk temperature')
+        plt.plot(config.geometry[:,0]*1e3, self.data[:,6]-273.15, color='r', linestyle='--', label='Inner wall temperature')
         plt.xlabel('x coordiante [mm]')
-        plt.ylabel('temperature [K]')
+        plt.ylabel('Temperature [$^\circ$C]')
         plt.legend(loc='best')
 
         if self.save:
@@ -38,9 +38,9 @@ class Plotting1D():
         
 
     def pressure_plot(self):
-        plt.plot(config.geometry[:,0]*1e3, self.data[:,8]/1e5, label='coolant pressure')
+        plt.plot(config.geometry[:,0]*1e3, self.data[:,8]/1e5, color='b', label='Coolant pressure')
         plt.xlabel('x coordiante [mm]')
-        plt.ylabel('pressure [bar]')
+        plt.ylabel('Pressure [bar]')
         plt.legend(loc='best')
 
         if self.save:
@@ -52,10 +52,10 @@ class Plotting1D():
         
 
     def heat_transfer_coeff_plot(self):
-        plt.plot(config.geometry[:,0]*1e3, self.data[:,2], label='halpha gas')
-        plt.plot(config.geometry[:,0]*1e3, self.data[:,3], label='halpha coolant')
+        plt.plot(config.geometry[:,0]*1e3, self.data[:,2], color='b', label='$h_{alpha}$ gas')
+        plt.plot(config.geometry[:,0]*1e3, self.data[:,3], color='r', linestyle='--',  label='$h_{alpha}$ coolant')
         plt.xlabel('x coordiante [mm]')
-        plt.ylabel('heat transfer coefficient [W/m/K]')
+        plt.ylabel('Heat transfer coefficient [W/m/K]')
         plt.legend(loc='best')
         
         if self.save:
@@ -67,10 +67,10 @@ class Plotting1D():
     
 
     def heat_flux_plot(self):
-        plt.plot(config.geometry[:,0]*1e3, self.data[:,4]/1e6, label='q radiation')
-        plt.plot(config.geometry[:,0]*1e3, self.data[:,5]/1e6, label='q total')
+        plt.plot(config.geometry[:,0]*1e3, self.data[:,4]/1e6, color='b', label='q radiation')
+        plt.plot(config.geometry[:,0]*1e3, self.data[:,5]/1e6, color='r', linestyle='--', label='q total')
         plt.xlabel('x coordiante [mm]')
-        plt.ylabel('heat flux [MW/m^2]')
+        plt.ylabel('Heat flux [MW/m^2]')
         plt.legend(loc='best')
         
         if self.save:
@@ -82,7 +82,7 @@ class Plotting1D():
     
 
     def reynolds_plot(self):
-        plt.plot(config.geometry[:,0]*1e3, self.data[:,9], label='coolant Re')
+        plt.plot(config.geometry[:,0]*1e3, self.data[:,9], color='b', label='Coolant Re')
         plt.xlabel('x coordiante [mm]')
         plt.ylabel('Re')
         plt.legend(loc='best')

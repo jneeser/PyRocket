@@ -17,7 +17,7 @@ from SectionThermalSim import HeatEquationSolver
 
 
 class HeatTransfer():
-    def __init__(self, cea, gas, geometry, material, coolant, cooling_geometry, m_dot, m_dot_coolant, T_amb, output, settings2D, model='standard-bartz', cool_model='gnielinski', eta_combustion=0.92):
+    def __init__(self, cea, gas, geometry, material, coolant, cooling_geometry, m_dot, m_dot_coolant, T_amb, output, settings2D, model='standard-bartz', cool_model='gnielinski', eta_c_star=0.92):
         """[summary]
         Class to calculate heat tranfer coefficients and radiative heat transfer at arbitrary locations along the chamber contour.
 		These functions are passed to the 2D thermal simulation, after which the program advances to the next chamber section. Several options are 
@@ -36,7 +36,7 @@ class HeatTransfer():
         self.m_dot_coolant = m_dot_coolant   			# coolant mass flow [kg/s]
         self.model = model                   			# hot gas side heat transfer model
         self.cool_model = cool_model		 			# coolant side heat transfer model
-        self.eta_comb = eta_combustion       			# combustion efficiency
+        self.eta_c_star = eta_c_star       			# combustion efficiency
         self.cooling_geometry = cooling_geometry	 	# cooling channel geometry class
 
         self.A_c = cooling_geometry.A_c					# cooling channel area [m^2]
@@ -69,7 +69,7 @@ class HeatTransfer():
         cstar = self.cea.chamber_pressure * throat_area / self.m_dot
         
         # hot gas temperature estimate used for the cinjarev correlation
-        T_hg       = T_s + 0.9*(T_aw * self.eta_comb**2 - T_s)
+        T_hg       = T_s + 0.9*(T_aw * self.eta_c_star**2 - T_s)
 
         # Nusselt number correlation for the combustion gases
         if self.model == 'standard-bartz':
@@ -231,12 +231,12 @@ class HeatTransfer():
             else:
                 raise ValueError('Invalid starting point for cooling fluid, select -1 or 0 for nozzle or injector side, respectively')
 
-            if idx == 0:
+            if i == 0:
                 self.section_length[idx] = 0
                 
             else:
-                x_len = (self.geometry[idx,0] - self.geometry[idx-1,0])**2
-                y_len = (self.geometry[idx,1] - self.geometry[idx-1,1])**2
+                x_len = (self.geometry[idx+1,0] - self.geometry[idx,0])**2
+                y_len = (self.geometry[idx+1,1] - self.geometry[idx,1])**2
                 
                 self.section_length[idx] = np.sqrt(x_len + y_len)
 

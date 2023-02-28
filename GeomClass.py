@@ -40,45 +40,48 @@ class ChamberGeometry():
         y_cyl = np.ones(len(x_cyl)) * self.D_c / 2
 
         # Converging section radius (at least 3 points)
-        n1 = max(round((self.r_1 * self.phi_conv ) / self.dx), 3)     # number of discretisations in the radius
-        t = np.linspace(0, self.phi_conv, n1, endpoint="False")
-
+        n1 = max([round(self.r_1 * self.phi_conv / self.dx), 3])     # number of discretisations in the radius
+        t = np.linspace(0, self.phi_conv, n1, endpoint=True)
+        
+        # x and y coordinates of the converging section radius
+        L_r1 = self.r_1 * np.sin(self.phi_conv)
         x_B = self.L_cyl + self.r_1 * np.sin(t)
         y_B = (self.D_c / 2 - self.r_1) + self.r_1 * np.cos(t)
+        
 
-        L_r1 = self.r_1 * np.sin(self.phi_conv)
-
-        # Converging section 
-        a_C = np.tan(self.phi_conv)
-        L_con = ((self.D_c / 2 - self.r_1 + self.r_1 * np.cos(self.phi_conv)) - (self.D_t / 2 + self.r_2 - self.r_2 * np.cos(-self.phi_conv))) / a_C
+        # x and y coordinates of linear converging section
+        L_con = ((self.D_c / 2 - self.r_1 + self.r_1 * np.cos(self.phi_conv)) - (self.D_t / 2 + self.r_2 - self.r_2 * np.cos(-self.phi_conv))) / np.tan(self.phi_conv)
         x_C = np.arange((self.L_cyl + L_r1 + self.dx), (self.L_cyl + L_r1 + L_con), self.dx)
-        y_C = (self.D_c / 2 - self.r_1 + self.r_1 * np.cos(self.phi_conv)) - a_C * np.arange(self.dx, L_con, self.dx);
+        y_C = (self.D_c / 2 - self.r_1 + self.r_1 * np.cos(self.phi_conv)) - np.tan(self.phi_conv) * np.arange(self.dx, L_con, self.dx)
 
 
         # Converging radius up to throat (at least 3 points)
-        n2 = max(round((self.r_2 * self.phi_conv) / self.dx), 3)      # number of discretisations in the radius
-        t = np.linspace(- self.phi_conv, 0, n2, endpoint="False")
+        n2 = max([round(self.r_2 * self.phi_conv / self.dx), 3])      # number of discretisations in the radius
+        t = np.linspace(- self.phi_conv, 0, n2, endpoint=False)
 
+        # x and y coordiantes of converging radius
         L_r21 = self.r_2 * np.sin(self.phi_conv)
         x_D = self.L_cyl + L_r1 + L_con + L_r21 + self.r_2 * np.sin(t)
         y_D = self.D_t / 2 + self.r_2 - self.r_2 * np.cos(t)
 
 
-        # Throat (at least 3 points)
-        n3  = max(round((self.r_n * self.phi_div) / self.dx), 3)      # number of discretisations in the radius
-        t = np.linspace(self.phi_div/3, self.phi_div, n3, endpoint="False")
+        # Throat radius (at least 3 points)
+        n3  = max([round(self.r_n * self.phi_div / self.dx), 3])      # number of discretisations in the radius
+        t = np.linspace(0, self.phi_div, n3, endpoint=True)
 
+        # x and y coordiantes of throat radius
         L_r22 = self.r_n * np.sin(self.phi_div)
-
-        x_E = self.L_cyl + L_r1 + L_con + L_r21 + self.r_2 * np.sin(t)
+        x_E = self.L_cyl + L_r1 + L_con + L_r21 + self.r_n * np.sin(t)
         y_E = self.D_t / 2 + self.r_n - self.r_n * np.cos(t)
 
-        # parabolic Rao nozzle 
-        # starting points of this section
+        # parabolic RAO nozzle, starting from end of radius
         P1x = x_E[-1]
         P1y = y_E[-1]
+        # remove repeat points
+        x_E = x_E[:-1]
+        y_E = y_E[:-1]
+
         # parabola factors 
-        
         a2  = (np.tan(self.phi_e)**(-1) - np.tan(self.phi_div)**(-1)*self.D_e*0.5 / P1y) * (1 - self.D_e*0.5 / P1y)**(-1)
         a1  = (np.tan(self.phi_div)**(-1) - a2) / (2 * P1y)
         a3  = P1x - a1 * P1y**2 - a2 * P1y
@@ -87,7 +90,7 @@ class ChamberGeometry():
         # number of points along exit parabola (at least 3)
         n4 = max(round((P2x - P1x)/self.dx), 3)
         
-        y_F = np.linspace(P1y, self.D_e/2, n4)
+        y_F = np.linspace(P1y, self.D_e/2, n4, endpoint=True)
         x_F = a1 * y_F**2 + a2 * y_F + a3
  
         self.x = np.concatenate((x_cyl, x_B, x_C, x_D, x_E, x_F), axis=0)
@@ -100,7 +103,7 @@ class ChamberGeometry():
 
     def plot_contour(self, path=False):
         plt.plot(self.x*1e3, self.y*1e3, color='b')
-        plt.plot (self.x*1e3, -self.y*1e3, color='b')
+        plt.plot(self.x*1e3, -self.y*1e3, color='b')
         plt.xlabel('x_coordinate [mm]')
         plt.ylabel('y_coordinate [mm]')
         plt.title('Chamber Contour')
