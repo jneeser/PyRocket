@@ -66,8 +66,8 @@ class Output1D:
             [
                 " section index",
 				" x coordinate [mm]",
-                " halpha [W/m/K]",
-                " halpha_c [W/m/K]",
+                " halpha [W/m^2/K]",
+                " halpha_c [W/m^2/K]",
                 " q_rad [W/m^2]",
                 " q_total [W/m^2]",
                 " T_wall_i [K]",

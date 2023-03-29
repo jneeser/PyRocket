@@ -55,7 +55,7 @@ class Plotting1D():
         plt.plot(config.geometry[:,0]*1e3, self.data[:,2], color='b', label='$h_{alpha}$ gas')
         plt.plot(config.geometry[:,0]*1e3, self.data[:,3], color='r', linestyle='--',  label='$h_{alpha}$ coolant')
         plt.xlabel('x coordiante [mm]')
-        plt.ylabel('Heat transfer coefficient [W/m/K]')
+        plt.ylabel('Heat transfer coefficient [W/m^2/K]')
         plt.legend(loc='best')
         
         if self.save:
