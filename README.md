@@ -1,4 +1,4 @@
-# DLR-PyRocket
+# PyRocket
 PyRocket is a thermal simulaton program for regeneratively cooled rocket engine thrust chambers. It is designed as a reasonably accurate predictive 
 tool to assist in design and allow for integration into basic shape optimisation. The program relies on the use of Nusselt number correlations for 
 deterimining the heat transfer coefficients from the hot combustion gases, as well as into the cooling fluid. The temperature inside the chamber 
