@@ -9,7 +9,6 @@
 #####################################################################
 
 from fipy import CellVariable, Gmsh2D, TransientTerm, DiffusionTerm, Viewer
-from fipy.tools import numerix
 import numpy as np
 from matplotlib import pyplot as plt
 

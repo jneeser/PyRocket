@@ -8,12 +8,11 @@
 # License:	GNU GENERAL PUBLIC LICENSE V3							#                                          
 #####################################################################
 
-import numpy as np
 import thermo
 import os
 
 from IsentropicRelations import Isentropic
-from CEAClass import CEA
+from CEAClass import BipropCEA
 from GeomClass import ChamberGeometry, CoolingGeometry
 from Output import Output1D, Settings2D
 
@@ -23,20 +22,20 @@ import PropLibrary as proplib
 
 # CEA input
 fuel            = 'Ethanol'                          # choose existing fuel or oxidiser from rocketcea or create new fuel or oxidiser blend in PropLibrary
-ox              = proplib.peroxide85
+ox              = proplib.peroxide90
 hot_gas_method  = 'cinjarev'                         # use either 'cinjarev', 'standard-bartz' or 'modified-bartz'
 
 # Operating point of combustion chamber 
 eta_c_star      = 0.90                               # c* efficiency
 MR              = 5
-m_dot           = 0.622                              # total mass flow [kg/s]
+m_dot           = 0.6                                # total mass flow [kg/s]
 m_dot_f         = m_dot / (MR + 1)
 m_dot_ox        = m_dot - m_dot_f
 Pc              = 20e5                               # Chamber pressure [Pa]
 
 # Coolant input
 cooling_fluid   = ['h2o2', 'h2o']                    # needs to be list of str
-fluid_mass_frac = [0.85, 0.15]    			         # mass fractions of the cooling fluid (needs to add up to 1)
+fluid_mass_frac = [0.9, 0.1]    			         # mass fractions of the cooling fluid (needs to add up to 1)
 m_dot_coolant   = m_dot_ox                 		 	 # mass flow through the cooling channels
 inlet_temp      = 288.15                     		 # inlet temperature [K]
 inlet_pressure  = 24.5e5                             # Cooling channel inlet pressure [Pa]
@@ -55,8 +54,8 @@ r_n       = 0.2*D_t                                  # throat diverging radius [
 phi_conv  = 30                                       # convergence angle [deg]
 phi_div   = 24                                       # divergence angle [deg]
 phi_e     = 15                                       # exit angle [deg]
-step_size = 0.004                                    # step size along the chamber contour [m]
-material  = matlib.Ti6Al4V                           # use entry from MaterialLibrary. Make sure temperature dependent properties are specified
+step_size = 0.008                                    # step size along the chamber contour [m]
+material  = matlib.IN718                             # use entry from MaterialLibrary. Make sure temperature dependent properties are specified
 
 # cooling channel geometry; h_c, psi, t_w_i can be functions of x 
 n         = 22                                       # number of cooling channels [int]
@@ -69,7 +68,7 @@ start_idx = -1										 # starting index, use 0 for injector side and -1 for no
 
 # 2D Section Simulation settings
 cell_size    = 0.1 * t_w_i                           # cell size in 2D section solver, will heavily impact performance
-time_step    = 1e2 * (cell_size)**2 / (material.alpha)       # time step in 2D section solver use 2e2 for IN718 and SS14404 and 2e3 for CuCr1Zr
+time_step    = 2e2 * (cell_size)**2 / (material.alpha)       # time step in 2D section solver use 2e2 for IN718 and SS14404 and 2e3 for CuCr1Zr
 tolerance    = 1e-2                                  # maximum temperature differnece between time steps
 max_iter     = 300									 # maximum number of iterations before termination
 save_fig     = True                                  # save figures to folder in Output Class
@@ -83,7 +82,7 @@ TC_r   = [36e-3, 36e-3, 36e-3]                       # radial position of thermo
 
 
 # save folder path for output class
-save_path = "SectionImages"
+save_path = "SectionImages90"
 
 
 ######################################
@@ -115,7 +114,7 @@ settings = Settings2D(cell_size, time_step, tolerance, max_iter, save_fig, print
 output = Output1D(geometry, save_path)
 
 # calculate hot gas properties from NASA CEA
-cea = CEA(fuel, ox, Pc) 
+cea = BipropCEA(fuel, ox, Pc) 
 cea.metric_cea_output('throat', MR, chamber.expansion_ratio)
 
 # isentropic properties for the hot gas along the chamber contour

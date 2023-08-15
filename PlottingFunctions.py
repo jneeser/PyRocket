@@ -10,7 +10,6 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy
 
 import config
 
@@ -30,7 +29,7 @@ class Plotting1D():
         plt.legend(loc='best')
 
         if self.save:
-            plt.savefig(self.save_path + '/temperature')
+            plt.savefig(self.save_path + '/temperature', dpi=600)
             plt.close()
             
         if self.show:
@@ -44,7 +43,7 @@ class Plotting1D():
         plt.legend(loc='best')
 
         if self.save:
-            plt.savefig(self.save_path + '/pressure')
+            plt.savefig(self.save_path + '/pressure', dpi=600)
             plt.close()
         
         if self.show:
@@ -59,7 +58,7 @@ class Plotting1D():
         plt.legend(loc='best')
         
         if self.save:
-            plt.savefig(self.save_path + '/halpha')
+            plt.savefig(self.save_path + '/halpha', dpi=600)
             plt.close()
 
         if self.show:
@@ -74,7 +73,7 @@ class Plotting1D():
         plt.legend(loc='best')
         
         if self.save:
-            plt.savefig(self.save_path + '/heat_flux')
+            plt.savefig(self.save_path + '/heat_flux', dpi=600)
             plt.close()
         
         if self.show:
@@ -88,7 +87,7 @@ class Plotting1D():
         plt.legend(loc='best')
 
         if self.save:
-            plt.savefig(self.save_path + '/reynolds')
+            plt.savefig(self.save_path + '/reynolds', dpi=600)
             plt.close()
     
         if self.show:

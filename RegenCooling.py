@@ -115,7 +115,7 @@ class HeatTransfer():
             p_co2 = self.cea.mole_fractions[1]['*CO2'][0] * self.gas.p_s[idx]
             # radiative heat flux of co2 molecules 
             q_rad += 4 * (p_co2/1e5*R_c)**0.3 * (self.gas.T_s[idx]/100)**3.5
-
+    
         return q_rad
 
 
