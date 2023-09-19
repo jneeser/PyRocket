@@ -70,7 +70,7 @@ alpha = k / rho / Cp			# thermal diffusivity [m^2/s]
 IN718 = Material('IN718', alpha, k, rho, Cp, v, E, a, eps, sig_u, roughness)
 
 # set vairable material properties for IN718
-IN718.thermal_conductivity(np.array([11.1, 12.4, 14.12, 16, 17.73, 19.46, 21.19, 23.06]), np.array([294.26, 366.48, 477.59, 588.7, 699.82, 810.92, 922.05, 1033.15]))
+IN718.thermal_conductivity(np.array([11.9, 13.7, 16.9, 21.7, 25.6, 22.9, 19.1, 17.7]), np.array([22, 233, 448, 657, 866, 1079, 1289, 1500])+273.15)
 
 # CuCr1Zr 
 k = 310							# thermal conductivity [W/m/K] at 400 C
