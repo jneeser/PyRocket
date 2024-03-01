@@ -26,12 +26,12 @@ ox              = 'N2O'
 hot_gas_method  = 'cinjarev'                         # use either 'cinjarev', 'standard-bartz' or 'modified-bartz'
 
 # Operating point of combustion chamber 
-eta_c_star      = 0.95                               # c* efficiency
+eta_c_star      = 0.9                                # c* efficiency
 MR              = 3
-m_dot           = 2                                  # total mass flow [kg/s]
+m_dot           = 1.3                                # total mass flow [kg/s]
 m_dot_f         = m_dot / (MR + 1)
 m_dot_ox        = m_dot - m_dot_f
-Pc              = 20e5                               # Chamber pressure [Pa]
+Pc              = 30e5                               # Chamber pressure [Pa]
 
 # Coolant input
 cooling_fluid   = ['ch3oh', 'h2o']                   # needs to be list of str
@@ -46,7 +46,7 @@ ambient_temp    = 288.15							 # ambient temperature for radiation boundary con
 # Chamber geometry
 D_c       = 100e-3                                   # chamber diamter [m]
 D_t       = 30e-3                                    # throat diameter [m]
-D_e       = 56e-3                                    # exit diamter [m]
+D_e       = 80e-3                                    # exit diamter [m]
 L_cyl     = 100e-3                                   # cylindrical chamber length [m]
 r_1       = 52e-3                                    # converging section radius [m]
 r_2       = 0.4*D_t                                  # throat converging section radius [m]
@@ -59,7 +59,7 @@ material  = matlib.SS14404                           # use entry from MaterialLi
 
 # cooling channel geometry; h_c, psi, t_w_i can be functions of x 
 n         = 22                                       # number of cooling channels [int]
-h_c       = 3e-3                                     # radial height of cooling channels [m] CAN BE FLOAT OR FUNCTION
+h_c       = 2e-3                                     # radial height of cooling channels [m] CAN BE FLOAT OR FUNCTION
 # EXAMPLE of function input for psi: psi = lambda x: 1/3 * (1 - 0.0001 * x) 
 psi       = 0.6                                      # fill factor of the cooling channels; fraction of the circumferecne covered by the cooling channels (0 - 1) CAN BE FLOAT OR FUNCTION
 t_w_i     = 1e-3                                     # inner chamber wall thickness [m] CAN BE FLOAT OR FUNCTION
@@ -83,7 +83,7 @@ TC_r   = [36e-3, 36e-3, 36e-3]                       # radial position of thermo
 
 
 # save folder path for output class
-save_path = "SectionImagesICLR"
+save_path = "SectionImages"
 
 
 ######################################
