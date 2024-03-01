@@ -67,7 +67,7 @@ t_w_o     = 1e-3                                     # outer chamber wall thickn
 start_idx = -1										 # starting index, use 0 for injector side and -1 for nozzle
 
 # 2D Section Simulation settings
-cell_size    = 0.2 * t_w_i                          # cell size in 2D section solver, will heavily impact performance
+cell_size    = 0.15 * t_w_i                          # cell size in 2D section solver, will heavily impact performance
 time_step    = (cell_size)**2 / (material.alpha)     # time step in 2D section solver (cell_size)**2 / (material.alpha)
 tolerance    = 1e-2                                  # maximum temperature differnece between time steps
 max_iter     = 300									 # maximum number of iterations before termination
