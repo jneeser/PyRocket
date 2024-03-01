@@ -190,10 +190,7 @@ terminal output for the simulation. Set 'log_TC' to True to enable the output.
 
 ### Single section takes more than 10 seconds to solve
 
-This can either be caused by the solver not reaching a steady state solution or the times tep being set too small. 
-In the case of non-convergence, the program will run continuously on one section. Abort the simulation and try again on a smaller time step.
-In the case of the time step being too small the program still runs as intended but very slowly. Increase the forefactor to the time_step 
-variable in config.py. This might cause stability issue with the simulation. 
+This can either be caused by the solver not reaching a steady state solution or the time step being set too small. Abort the simulation and try again with a different adaptive time step configuration. The function 'adaptive_time_step' in 'SectionThermalSim.py' is responsible for setting the time step based on the previous solution. For better convergence behaviour reduce the value of 'step_up' in the 'adaptive_time_step' function (default is 1.2). 
 
 ### Fluid propery returned as 'None' type
 
