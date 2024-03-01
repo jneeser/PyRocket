@@ -87,6 +87,23 @@ class HeatEquationSolver():
         )
 
 
+    def adaptive_time_step(self, T_max, min_val=5, low_val=50, max_val=400):
+        # adaptive time step based on temperature development of the last two time steps
+        delta_T = np.abs(T_max[-2] - T_max[-1])
+        
+        if delta_T < min_val:
+            self.time_step *= 1.0
+
+        elif delta_T < low_val:
+            self.time_step *= 1.25
+
+        elif delta_T > max_val:
+            self.time_step /= 4
+
+        else:
+            self.time_step *= 1.0
+
+
     def run_sim(self):
         # generate mesh
         mesh = get_section_mesh(self.settings.cell_size, self.idx)
@@ -101,20 +118,26 @@ class HeatEquationSolver():
         eq = TransientTerm() == DiffusionTerm(coeff=self.material.alpha)
 
         running = True
-        T_max = self.T_amb
+        T_max = [self.T_amb, self.T_amb]
         time = 0
         step = 0
+
+        # initalise first time step with value from settings 
+        self.time_step = self.settings.time_step
 
         while running:
             # update boundary conditions
             self.boundary_conditions(mesh, phi, x, y)
 
+            # update time step
+            self.adaptive_time_step(T_max)
+
             # solve equation and update time step
-            eq.solve(var=phi, dt=self.settings.time_step)
-            time += self.settings.time_step
+            eq.solve(var=phi, dt=self.time_step)
+            time += self.time_step
 
             # termination critera when steady state is approximately reached
-            diff = abs(T_max - max(phi))
+            diff = abs(T_max[-1] - max(phi))
             if diff < self.settings.tolerance:
                 running = False 
 				
@@ -130,9 +153,9 @@ class HeatEquationSolver():
                 running = False
 				
             if self.settings.print_result:
-                print('time: ', round(time,3), ' [s]	T max: ', round(T_max,3), ' [K]')				
+                print('time: ', round(time,3), ' [s]	T max: ', round(T_max[-1], 3), ' [K]')
 
-            T_max = max(phi)
+            T_max.append(max(phi))
             step += 1 
             self.diff = diff
 
@@ -205,8 +228,6 @@ if __name__ == "__main__":
     T_c = 288
     T_amb = 288
     idx = 1
-    settings = Settings2D(cell_size=2e-4, time_step=4, tolerance=1e-2, max_iter=100, save_fig=True, print_result=True, run_time='steady_state')
-    settings.output_msg()
 	
     solver = HeatEquationSolver(
         idx,
@@ -219,7 +240,7 @@ if __name__ == "__main__":
         T_c,
         T_amb,
         path='TestSectionThermalSim',
-        settings=settings
+        settings=config.settings
     )
 
     solver.run_sim()

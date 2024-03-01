@@ -101,7 +101,6 @@ eps = 0.8						# thermal emissivity
 roughness = 0.9e-5				# effective roughness height [m] from Materialize
 alpha = k / rho / Cp			# thermal diffusivity [m^2/s]
 SS14404 = Material('SS14404', alpha, k, rho, Cp, v, E, a, eps, sig_u, roughness)
-
 # variable material properties from 'Transient thermo-mechanical modeling of stress evolution and re-melt volume fraction in electron beam additive manufacturing process' by R.K. Adhitan
 SS14404.thermal_conductivity(np.array([13.5, 16, 17.5, 19.5, 22, 23.5, 24.5, 25.5, 27, 28, 29]), np.array([273, 373, 473, 573, 673, 773, 873, 973, 1073, 1173, 1273]))
 
