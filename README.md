@@ -79,14 +79,14 @@ boundary conditions and evaluating results).
 
 Boundary Name 		| Description
 ------------------- | -------------------------------------------------------------
-ChmaberWall   		| Inner chamber wall in contact with combustion gases
+ChamberWall   		| Inner chamber wall in contact with combustion gases
 OuterWall     	 	| Outer wall of combustion chamber
 CoolantBottomWall	| Wall of the cooling channel closest to the inner chamber wall
 CoolantTopWall		| Wall of the cooling channel closest to the outer chamber wall 
 CoolantSideWall		| Wall of the cooling channel rib
 
 If the geometry of the cooling channels is fundamentally changed, several functions in several files need to be altered. In order to edit the basic properties, such as 
-area and hydraulic diameter, edit the 'CoolingGeometry' class in GeomClass.py. In order to alter the mesh iself, edit the SectionMesh.py file. The 2D mesh geometry is 
+area and hydraulic diameter, edit the 'CoolingGeometry' class in GeomClass.py. In order to alter the mesh itself, edit the SectionMesh.py file. The 2D mesh geometry is 
 produced using [GMSH](https://gmsh.info/). Several tutorials exist on how to use GMSH. Lastly, SectionThermalSim.py needs to be edited. This extends to the faces on which 
 boundary conditions are applied, as well as the faces over which boundary fluxes along normal vectors are calculated. These can be found starting in line 52 and 126 respectively. 
 Changes to the mesh can be verified by running SectionThermalSim.py
@@ -124,6 +124,8 @@ of the previous time step before solving the next time step. The simulation is e
 or after a set maximum number of iterations is reached. All settings for the 2D thermal sim are found in config.py. During a full run of the program, the boundary flux over
 all boundaries is calculated and used to determine the total heat flux, as well as the temperature increase of the cooling fluid as it passes throug each section. 
 
+## Liquid Film Cooling Model
+Optional addition of film cooling to supplement regenerative cooling. This is an implementation of the analytical 0D liquid film cooling model proposed by [Shine et al](https://www.researchgate.net/publication/256718300_A_new_generalised_model_for_liquid_film_cooling_in_rocket_combustion_chambers).The model relies on an energy balance between the convective and radiative heat transfer of the combustion gases and the evaporation of the coolant. The model produces an estimate of the liquid film length and assumes that the temperature rise of the wall under the liquid film is very small. The liquid film cooling length and the resultant reduction in convective heat transfer coefficient are passed to the regenerative cooling method. The film cooling is only assumed to be effective as long as the chamber section is within the liquid film length. 
 
 ### Plotting Options 
 Results of the full chamber simulation are saved in the target directory as a csv file. A select set of saved data is automatically plotted by calling 'PlottingFunctions.py'.

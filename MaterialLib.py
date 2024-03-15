@@ -105,3 +105,19 @@ SS14404 = Material('SS14404', alpha, k, rho, Cp, v, E, a, eps, sig_u, roughness)
 SS14404.thermal_conductivity(np.array([13.5, 16, 17.5, 19.5, 22, 23.5, 24.5, 25.5, 27, 28, 29]), np.array([273, 373, 473, 573, 673, 773, 873, 973, 1073, 1173, 1273]))
 
 
+# AlSi10Mg 
+k = 140					        # thermal conductivity [W/m/K] at 20 C
+Cp = 730					    # specific heat [J/kg/K] at 20 C
+rho = 2680						# density [kg/m^3] at 20 C
+v = 1                       	# poiosson ratio
+E = 1							# youngs modulus [Pa]
+a = 1							# thermal expasion coefficinent [1/K]
+sig_u = 1                  		# ultimate strength [Pa]
+eps = 0.8						# thermal emissivity
+roughness = 1e-5				# effective roughness height [m], estimate
+alpha = k / rho / Cp			# thermal diffusivity [m^2/s]
+AlSi10Mg = Material('AlSi10Mg', alpha, k, rho, Cp, v, E, a, eps, sig_u, roughness)
+# variable material properties from https://backend.orbit.dtu.dk/ws/portalfiles/portal/222710402/Thermal_properties_JMEP_postprint.pdf
+# assuming heat treated and 99.5% theoretical density
+AlSi10Mg.thermal_conductivity(np.array([140, 144, 149]), np.array([25, 200, 400])+273.15)
+

@@ -32,6 +32,7 @@ sim = rc.HeatTransfer(
     model=config.hot_gas_method,
     cool_model=config.cooling_method,
     eta_c_star=config.eta_c_star,
+    film = config.film,
 )
 
 sim.run()

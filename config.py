@@ -10,11 +10,13 @@
 
 import thermo
 import os
+import numpy as np
 
 from IsentropicRelations import Isentropic
 from CEAClass import BipropCEA
 from GeomClass import ChamberGeometry, CoolingGeometry
 from Output import Output1D, Settings2D
+from FilmCooling import FilmCooling
 
 import MaterialLib as matlib
 import PropLibrary as proplib
@@ -43,6 +45,11 @@ inlet_pressure  = 40e5                               # Cooling channel inlet pre
 cooling_method  = 'gnielinski'                       # use either 'gnielinski', 'dittus-boelter' or 'dittus-boelter-simple', pay attention to suitable Re number range
 ambient_temp    = 288.15							 # ambient temperature for radiation boundary condition [K] (must be type float)!!
 
+# Film cooling settings 
+m_dot_film = 0.3 * m_dot_f
+injection_velocity = 20								  # [m/s]
+injector_diameter  = 0.5e-3							  # [m]
+
 # Chamber geometry
 D_c       = 100e-3                                   # chamber diamter [m]
 D_t       = 30e-3                                    # throat diameter [m]
@@ -55,7 +62,7 @@ phi_conv  = 30                                       # convergence angle [deg]
 phi_div   = 24                                       # divergence angle [deg]
 phi_e     = 15                                       # exit angle [deg]
 step_size = 0.01                                     # step size along the chamber contour [m]
-material  = matlib.SS14404                           # use entry from MaterialLibrary. Make sure temperature dependent properties are specified
+material  = matlib.AlSi10Mg                          # use entry from MaterialLibrary. Make sure temperature dependent properties are specified
 
 # cooling channel geometry; h_c, psi, t_w_i can be functions of x 
 n         = 22                                       # number of cooling channels [int]
@@ -124,3 +131,9 @@ gas.calculate()
 
 # coolant Properties from thermo library
 coolant = thermo.Mixture(cooling_fluid, ws=fluid_mass_frac, P=inlet_pressure, T=inlet_temp)     
+
+# film cooling model
+film = FilmCooling(cea, coolant, injection_velocity, injector_diameter, D_c, m_dot - m_dot_film, m_dot_film)
+film.film_length()
+film.cooled_idx = np.where(geometry[:,0] <= film.liquid_film_length)[0]
+print('liquid film cooling length:    ', np.round(film.liquid_film_length * 1000, 3), ' mm')

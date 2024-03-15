@@ -17,7 +17,7 @@ from SectionThermalSim import HeatEquationSolver
 
 
 class HeatTransfer():
-    def __init__(self, cea, gas, geometry, material, coolant, cooling_geometry, m_dot, m_dot_coolant, T_amb, output, settings2D, model='standard-bartz', cool_model='gnielinski', eta_c_star=0.92):
+    def __init__(self, cea, gas, geometry, material, coolant, cooling_geometry, m_dot, m_dot_coolant, T_amb, output, settings2D, model='standard-bartz', cool_model='gnielinski', eta_c_star=0.92, film=False):
         """[summary]
         Class to calculate heat tranfer coefficients and radiative heat transfer at arbitrary locations along the chamber contour.
 		These functions are passed to the 2D thermal simulation, after which the program advances to the next chamber section. Several options are 
@@ -41,6 +41,8 @@ class HeatTransfer():
 
         self.A_c = cooling_geometry.A_c					# cooling channel area [m^2]
         self.D_h = cooling_geometry.D_h				    # cooling channel hydraulic diameter [m]
+
+        self.film = film
 
         self.T_amb = T_amb								# ambient temperature [K], must be float!!!
         self.boltzmann = 5.67e-8						# stefan boltzmann constant
@@ -71,6 +73,17 @@ class HeatTransfer():
         # hot gas temperature estimate used for the cinjarev correlation
         T_hg       = T_s + 0.9*(T_aw * self.eta_c_star**2 - T_s)
 
+        # in case of film 
+        # stanton number correction without film cooling is 1.0
+        St_St0 = 1.0
+        if self.film != False:
+            if idx in self.film.cooled_idx:
+                St_St0 = self.film.St_St0
+            else:
+                pass
+        else:
+            pass
+
         # Nusselt number correlation for the combustion gases
         if self.model == 'standard-bartz':
             # standard bartz correlation, mostly applicable for larger engines. Tends to oveerpredict heat flux near the troat, especially in smaller engines
@@ -90,7 +103,7 @@ class HeatTransfer():
         else:
             raise ValueError('Invalid heat transfer method. Select: "standard-bartz", "modified-bartz" or "cinjarev"')
 
-        return halpha, T_hg
+        return halpha * St_St0, T_hg
         
         
     def pressure_drop(self, idx):
