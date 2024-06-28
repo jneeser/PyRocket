@@ -38,7 +38,7 @@ aniline = rocketcea.blends.newFuelBlend(fuelL=['aniline'], fuelPcentL=[100])
 # furfurylalcohol
 card_str = """
 fuel C5H6O2(L)  C 5.0   H 6.0    O 2.0  wt%=100
-h, kj/mol=-276.2    t(k)=298.15   rho=1.13 
+h,kj/mol=-276.2    t(k)=298.15   rho=1.13 
 """
 add_new_fuel( 'furfurylalcohol', card_str )
 furfurylalcohol = rocketcea.blends.newFuelBlend(fuelL=['furfurylalcohol'], fuelPcentL=[100]) 
