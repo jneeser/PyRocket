@@ -5,17 +5,21 @@
 # Creator:  Joanthan Neeser                                         #
 # Date:     15.12.2022                                              #
 # Version:  2.3  													#
-# License:	GNU GENERAL PUBLIC LICENSE V3							#                                          
+# License:	GNU GENERAL PUBLIC LICENSE V3			                #	 
+#                                                                   #
 #####################################################################
 
 import rocketcea
 from rocketcea.cea_obj import CEA_Obj, add_new_fuel, add_new_oxidizer, add_new_propellant
 
+# ethanol blends
+ethanol90 = rocketcea.blends.newFuelBlend(fuelL=['C2H5OH', 'H2O'], fuelPcentL=[90,10]) 
+
 
 # methanol blends
-mehtanol80 = rocketcea.blends.newFuelBlend(fuelL=['Methanol', 'H2O'], fuelPcentL=[80,20]) 
-mehtanol85 = rocketcea.blends.newFuelBlend(fuelL=['Methanol', 'H2O'], fuelPcentL=[85,15]) 
-mehtanol90 = rocketcea.blends.newFuelBlend(fuelL=['Methanol', 'H2O'], fuelPcentL=[90,10]) 
+methanol80 = rocketcea.blends.newFuelBlend(fuelL=['Methanol', 'H2O'], fuelPcentL=[80,20]) 
+methanol85 = rocketcea.blends.newFuelBlend(fuelL=['Methanol', 'H2O'], fuelPcentL=[85,15]) 
+methanol90 = rocketcea.blends.newFuelBlend(fuelL=['Methanol', 'H2O'], fuelPcentL=[90,10]) 
 
 # Example of RocketCEA propellant blends. Works the same way for fuels
 # Hydrogen Peroxide  

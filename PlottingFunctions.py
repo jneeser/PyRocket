@@ -5,7 +5,8 @@
 # Creator:  Joanthan Neeser                                         #
 # Date:     15.12.2022                                              #
 # Version:  2.3  													#
-# License:	GNU GENERAL PUBLIC LICENSE V3							#                                          
+# License:	GNU GENERAL PUBLIC LICENSE V3			                #	 
+#                                                                   #
 #####################################################################
 
 import matplotlib.pyplot as plt
