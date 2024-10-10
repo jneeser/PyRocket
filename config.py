@@ -76,6 +76,7 @@ start_idx = -1										 # starting index, use 0 for injector side and -1 for no
 # 2D Section Simulation settings
 cell_size    = 0.2 * t_w_i                          # cell size in 2D section solver, will heavily impact performance
 time_step    = (cell_size)**2 / (material.alpha)     # time step in 2D section solver (cell_size)**2 / (material.alpha)
+adaptive_up  = 1.4                                   # UP factor for adaptive time step. Increase for faster convergence but less stability
 tolerance    = 1e-2                                  # maximum temperature differnece between time steps
 max_iter     = 300									 # maximum number of iterations before termination
 save_fig     = True                                  # save figures to folder in Output Class
@@ -116,7 +117,7 @@ cooling_geom.set_thermocouples(TC_x, TC_r)
 
 
 # generate settings class for 2D thermal sim
-settings = Settings2D(cell_size, time_step, tolerance, max_iter, save_fig, print_result, run_time, start_idx, log_TC, cooling_geom.thermocouples)
+settings = Settings2D(cell_size, time_step, tolerance, max_iter, save_fig, print_result, run_time, start_idx, adaptive_up, log_TC, cooling_geom.thermocouples)
 
 # generate output class 
 output = Output1D(geometry, save_path)
