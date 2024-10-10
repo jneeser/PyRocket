@@ -5,7 +5,8 @@
 # Creator:  Joanthan Neeser                                         #
 # Date:     15.12.2022                                              #
 # Version:  2.3  													#
-# License:	GNU GENERAL PUBLIC LICENSE V3							#                                          
+# License:	GNU GENERAL PUBLIC LICENSE V3			                #	 
+#                                                                   #
 #####################################################################
 
 import numpy as np
@@ -108,8 +109,9 @@ class ChamberGeometry():
         plt.ylabel('y_coordinate [mm]')
         plt.title('Chamber Contour')
         plt.axis('equal')
+        plt.grid()
         if path != False:
-            plt.savefig(path + '/chamber_contour.png')
+            plt.savefig(path + '/chamber_contour.png', dpi=400)
             plt.close()
         else:
             plt.show()
