@@ -90,7 +90,6 @@ class HeatEquationSolver():
     def adaptive_time_step(self, T_max, min_val=1, low_val=50, max_val=400):
         # adaptive time step based on temperature development of the last two time steps
         delta_T = T_max[-1] - T_max[-2]
-        step_up = 1.4
         step_down = 2
 
         if delta_T < 0:
@@ -100,7 +99,7 @@ class HeatEquationSolver():
             self.time_step *= 1.0
 
         elif delta_T < low_val:
-            self.time_step *= step_up
+            self.time_step *= self.settings.adaptive_up
 
         elif delta_T > max_val:
             self.time_step /= step_down

@@ -14,7 +14,7 @@ import csv
 
 # settings for 2D transient thermal sims 
 class Settings2D:
-    def __init__(self, cell_size, time_step, tolerance, max_iter, save_fig, print_result, run_time, start_idx=-1, log_thermocouples=False, thermocouples=0):
+    def __init__(self, cell_size, time_step, tolerance, max_iter, save_fig, print_result, run_time, start_idx=-1, adaptive_up=1.4, log_thermocouples=False, thermocouples=0):
         self.cell_size    = cell_size                               # cell size in 2D section solver, will heavily impact performance
         self.time_step    = time_step                               # time step in 2D section solver use 5e2 for IN718 and 5e3 for CuCrZr
         self.tolerance    = tolerance                               # maximum temperature differnece between time steps
@@ -23,6 +23,7 @@ class Settings2D:
         self.print_result = print_result                            # print intermittant maximum temperatures, useful for DEBUGGING
         self.run_time     = run_time                                # 'steady_state' or termination time for sim
         self.start_idx    = start_idx							    # starting index, use 0 for injector side and -1 for nozzle
+        self.adaptive_up  = adaptive_up                             # adaptive time step (step up)
         self.log_thermocouples = log_thermocouples                  # bool if temperature at specific locations is to be logged
         self.thermocouples = thermocouples                          # set thermocouple locations for validation purposes
 
