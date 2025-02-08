@@ -98,4 +98,7 @@ class FilmCooling():
 		self.coolant_flow()
 		self.stanton_number()
 		
-		self.liquid_film_length = self.gamma / self.m_v
+		if self.m_dot_c == 0.0:
+			self.liquid_film_length = -1
+		else:
+			self.liquid_film_length = self.gamma / self.m_v
