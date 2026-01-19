@@ -42,7 +42,7 @@ class Isentropic():
 				initial_guess = 10
 
 			mach = lambda M:  1/(M*M) * (2/(self.gamma+1) * (1 + (self.gamma-1)/2*M*M))**((self.gamma+1)/(self.gamma-1)) - (A_c/A_t)**2
-			self.M[i] = scipy.optimize.fsolve(mach, initial_guess)
+			self.M[i] = scipy.optimize.fsolve(mach, initial_guess)[0]
 
 	def adiabatic_wall_temp(self):
 		# Assumes turbulent flow in the chamber and laminar flow after the throat
