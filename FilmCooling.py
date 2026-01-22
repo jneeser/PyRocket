@@ -31,7 +31,7 @@ class FilmCooling():
 		self.G_m     = self.cea.rho * (self.v_g - self.v_c)
 		
 		# coolant boiling temperature and heat of evaporation taken from the dominant specie
-		idx = np.where(np.max(self.coolant.ws))[0][0]						# index of dominant specie by mass fraction
+		idx = np.argmax(self.coolant.ws)						# index of dominant specie by mass fraction
 		self.T_sat   = self.coolant.Tbs[idx]								# boiling temperature of dominant specie
 		
 		# mass averaged entalpy of evaporation [J/kg]

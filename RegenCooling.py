@@ -109,8 +109,12 @@ class HeatTransfer():
     def pressure_drop(self, idx):
         # using Darcy Friction Factor to determine pressure drop. Use surface roughness given in Material Class
         surface_roughness = self.material.roughness
-        fd = scipy.optimize.fsolve(lambda f: -2 * np.log10(surface_roughness / (3.7 * self.D_h[idx]) + 2.51 / (self.Re * np.sqrt(f))) -1 / np.sqrt(f), 0.001)
-        dp = fd * self.section_length[idx] / self.D_h[idx] * 0.5 * self.coolant.rho * self.v_coolant**2 
+        # fd = scipy.optimize.fsolve(lambda f: -2 * np.log10(surface_roughness / (3.7 * self.D_h[idx]) + 2.51 / (self.Re * np.sqrt(f))) -1 / np.sqrt(f), 0.001)
+        # dp = fd * self.section_length[idx] / self.D_h[idx] * 0.5 * self.coolant.rho * self.v_coolant**2 
+
+        fd = scipy.optimize.fsolve(lambda f: -2 * np.log10(surface_roughness / (3.7 * self.D_h[idx]) + 2.51 / (self.Re * np.sqrt(f))) -1 / np.sqrt(f), 0.001)[0]
+        rho = self.coolant.rhol if self.coolant.phase == 'l' else self.coolant.rhog
+        dp = fd * self.section_length[idx] / self.D_h[idx] * 0.5 * rho * self.v_coolant**2 
         
         return dp, fd
 
@@ -134,8 +138,13 @@ class HeatTransfer():
 
     def heat_trans_coeff_coolant(self, T_wall_coolant, idx):
         # coolant flow velocity based on bulk properteis
-        self.v_coolant = self.m_dot_coolant / (self.coolant.rho * self.A_c[idx])
-        self.Re = self.coolant.rho * self.v_coolant * self.D_h[idx] / self.coolant.mu
+        # self.v_coolant = self.m_dot_coolant / (self.coolant.rho * self.A_c[idx])
+        # self.Re = self.coolant.rho * self.v_coolant * self.D_h[idx] / self.coolant.mu
+
+        rho = self.coolant.rhol if self.coolant.phase == 'l' else self.coolant.rhog
+        mu = self.coolant.mul if self.coolant.phase == 'l' else self.coolant.mug
+        self.v_coolant = self.m_dot_coolant / (rho * self.A_c[idx])
+        self.Re = rho * self.v_coolant * self.D_h[idx] / mu
 		
 		# temperature approximation in the near wall fluid film using a logarithmic mean for log temperature profile
         def get_near_wall_fluid():
@@ -262,8 +271,10 @@ class HeatTransfer():
             self.out.q_rad[idx]     = self.q_rad
             self.out.q[idx]         = self.q
             self.out.T_wall_i[idx]  = self.T_wall_i
-            self.out.T_c[idx]       = self.coolant.T
-            self.out.P_c[idx]       = self.coolant.P
+
+            self.out.T_c[idx]       = np.asarray(self.coolant.T).item() if hasattr(self.coolant.T, '__iter__') else self.coolant.T
+            self.out.P_c[idx]       = np.asarray(self.coolant.P).item() if hasattr(self.coolant.P, '__iter__') else self.coolant.P
+
             self.out.Re[idx]	    = self.Re
             self.out.T_hg[idx]	    = self.T_hg 
             self.out.v_coolant[idx] = self.v_coolant
